@@ -2,11 +2,7 @@
 
 A lightweight, fully interactive, single-file HTML5 web application designed to track character resources, spell slots, and racial/class traits for **Varik Emberlain**, a Level 5 Wild Magic Sorcerer (and adaptable to any Level 5 D&D character).
 
-## 🚀 LIVE DEMO
-
-### 🔗 ACCESS THE LIVE TRACKER HERE:>
-
-## 👉 [VIEW THE TRACKER LIVE](https://sc137.github.io/character-status-tracker/varik_emberlain_tracker.html) 👈
+## 🚀 [VIEW THE TRACKER LIVE](https://sc137.github.io/character-status-tracker/varik_emberlain_tracker.html)
 
 ## ✨ Features
 
