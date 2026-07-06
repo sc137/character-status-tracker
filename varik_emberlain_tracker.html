@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varik Emberlain - Sorcerer Level 5</title>
+    <!-- Tailwind CSS for modern utility-first styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar styling for a cleaner dark interface */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen font-sans antialiased selection:bg-amber-500 selection:text-gray-950">
+
+    <div class="max-w-4xl mx-auto px-4 py-6">
+        <!-- Header -->
+        <header class="border-b border-gray-800 pb-4 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-amber-500">Varik Emberlain</h1>
+                <p class="text-sm text-gray-400 mt-1 font-medium">Sorcerer Level 5</p>
+            </div>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+                <!-- Save Status Indicator -->
+                <div class="flex items-center justify-end gap-1.5 px-1">
+                    <span id="save-indicator" class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider opacity-0 transition-opacity duration-300 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        Saved to LocalStorage
+                    </span>
+                </div>
+                <!-- Global Action Buttons -->
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button onclick="triggerLongRest()" class="flex-1 md:flex-initial px-4 py-2 text-xs font-semibold uppercase tracking-wider bg-emerald-900 border border-emerald-700 hover:bg-emerald-800 text-emerald-200 rounded transition">
+                        Long Rest
+                    </button>
+                    <button onclick="resetAll()" class="flex-1 md:flex-initial px-4 py-2 text-xs font-semibold uppercase tracking-wider bg-gray-900 border border-gray-700 hover:border-red-500 hover:text-red-400 rounded transition">
+                        Reset All Stats
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            
+            <!-- Left Column: Core Trackers (HP, Sorcery Points, Spell Slots, Innate Magic) -->
+            <div class="md:col-span-8 space-y-6">
+                
+                <!-- HIT POINTS CARD -->
+                <section class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="text-red-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                                </svg>
+                            </span>
+                            <h2 class="text-xl font-bold tracking-wide">Hit Points</h2>
+                        </div>
+                        <div class="text-sm text-gray-400">
+                            Max HP: 
+                            <input type="number" id="max-hp-input" value="42" min="1" onchange="updateMaxHP(this.value)" class="w-16 bg-gray-800 border border-gray-700 text-center text-white rounded px-1 py-0.5 focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- HP Display / Visual Bar -->
+                    <div class="bg-gray-950 p-4 rounded-lg border border-gray-800 mb-4 text-center">
+                        <div class="flex justify-semibold items-baseline gap-2 mb-2 justify-center">
+                            <span id="current-hp-val" class="text-4xl md:text-5xl font-black text-red-500">42</span>
+                            <span class="text-gray-500 text-xl">/</span>
+                            <span id="max-hp-val" class="text-2xl text-gray-400">42</span>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="w-full rounded-full h-3.5 mb-2 overflow-hidden bg-gray-800">
+                            <div id="hp-progress" class="bg-red-600 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+                        </div>
+
+                        <!-- Temporary HP Input -->
+                        <div class="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-gray-800">
+                            <span class="text-xs text-gray-400 uppercase tracking-wider">Temp HP:</span>
+                            <input type="number" id="temp-hp-input" value="0" min="0" onchange="updateTempHP(this.value)" class="w-16 bg-gray-800 border border-gray-700 text-center text-white rounded px-1 py-0.5 focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- HP Adjusters -->
+                    <div class="space-y-3">
+                        <div class="flex gap-2 flex-wrap">
+                            <button onclick="adjustHP(-10)" class="flex-1 min-w-[50px] py-2 bg-red-950/40 hover:bg-red-950/80 border border-red-900 text-red-300 rounded font-semibold text-sm transition duration-150 active:scale-95">-10</button>
+                            <button onclick="adjustHP(-5)" class="flex-1 min-w-[50px] py-2 bg-red-950/40 hover:bg-red-950/80 border border-red-900 text-red-300 rounded font-semibold text-sm transition duration-150 active:scale-95">-5</button>
+                            <button onclick="adjustHP(-1)" class="flex-1 min-w-[50px] py-2 bg-red-950/40 hover:bg-red-950/80 border border-red-900 text-red-300 rounded font-semibold text-sm transition duration-150 active:scale-95">-1</button>
+                            <button onclick="adjustHP(1)" class="flex-1 min-w-[50px] py-2 bg-emerald-950/40 hover:bg-emerald-950/80 border border-emerald-900 text-emerald-300 rounded font-semibold text-sm transition duration-150 active:scale-95">+1</button>
+                            <button onclick="adjustHP(5)" class="flex-1 min-w-[50px] py-2 bg-emerald-950/40 hover:bg-emerald-950/80 border border-emerald-900 text-emerald-300 rounded font-semibold text-sm transition duration-150 active:scale-95">+5</button>
+                            <button onclick="adjustHP(10)" class="flex-1 min-w-[50px] py-2 bg-emerald-950/40 hover:bg-emerald-950/80 border border-emerald-900 text-emerald-300 rounded font-semibold text-sm transition duration-150 active:scale-95">+10</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="number" id="custom-hp-adjust" placeholder="Value..." class="flex-1 bg-gray-950 border border-gray-800 text-center text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                            <button onclick="applyCustomHP(true)" class="flex-1 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-semibold text-sm rounded transition duration-150 active:scale-95">Heal Custom</button>
+                            <button onclick="applyCustomHP(false)" class="flex-1 py-2 bg-red-700 hover:bg-red-600 text-white font-semibold text-sm rounded transition duration-150 active:scale-95">Damage Custom</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SORCERY POINTS CARD -->
+                <section class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="text-blue-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 21l8.982-11.795-1.32-.135m-5.45.377L12 3L3.018 14.795l1.32.135" />
+                                </svg>
+                            </span>
+                            <h2 class="text-xl font-bold tracking-wide">Sorcery Points</h2>
+                        </div>
+                        <div class="text-sm text-gray-400">
+                            Max Points: 
+                            <input type="number" id="max-sp-input" value="5" min="0" onchange="updateMaxSP(this.value)" class="w-16 bg-gray-800 border border-gray-700 text-center text-white rounded px-1 py-0.5 focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Sorcery Points Display -->
+                    <div class="bg-gray-950 p-4 rounded-lg border border-gray-800 mb-4 text-center">
+                        <div class="flex justify-center items-baseline gap-2 mb-2">
+                            <span id="current-sp-val" class="text-4xl md:text-5xl font-black text-blue-500">5</span>
+                            <span class="text-gray-500 text-xl">/</span>
+                            <span id="max-sp-val" class="text-2xl text-gray-400">5</span>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="w-full rounded-full h-3.5 mb-2 overflow-hidden bg-gray-800">
+                            <div id="sp-progress" class="bg-blue-600 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sorcery Points Adjusters -->
+                    <div class="space-y-4">
+                        <div class="flex gap-2">
+                            <button onclick="adjustSP(-1)" class="flex-1 py-2.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-lg font-bold transition duration-150 active:scale-95">-1</button>
+                            <button onclick="adjustSP(1)" class="flex-1 py-2.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-lg font-bold transition duration-150 active:scale-95">+1</button>
+                        </div>
+
+                        <!-- Metamagic Quick Options -->
+                        <div class="pt-3 border-t border-gray-800">
+                            <span class="text-xs text-gray-400 uppercase tracking-wider block mb-2">Common Sorcery Costs</span>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-xs">
+                                <button onclick="spendSorceryCost(1, 'Empowered Spell')" class="py-1.5 bg-blue-950/25 hover:bg-blue-950/50 border border-blue-900/50 text-blue-300 rounded transition duration-150">Empowered (1p)</button>
+                                <button onclick="spendSorceryCost(2, 'Quickened Spell')" class="py-1.5 bg-blue-950/25 hover:bg-blue-950/50 border border-blue-900/50 text-blue-300 rounded transition duration-150">Quickened (2p)</button>
+                                <button onclick="spendSorceryCost(2, 'Subtle Spell')" class="py-1.5 bg-blue-950/25 hover:bg-blue-950/50 border border-blue-900/50 text-blue-300 rounded transition duration-150">Subtle (2p)</button>
+                                <button onclick="spendSorceryCost(3, 'Heightened Spell')" class="py-1.5 bg-blue-950/25 hover:bg-blue-950/50 border border-blue-900/50 text-blue-300 rounded transition duration-150">Heightened (3p)</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SPELL SLOTS CARD -->
+                <section class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-cyan-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A1.75 1.75 0 1 0 19.75 18.5l-5.83-5.83m-2.5 2.5a2.5 2.5 0 1 1-3.536-3.536 2.5 2.5 0 0 1 3.536 3.536Zm10.9-10.9a6.97 6.97 0 0 0-9.8 0l-9.8 9.8a1.75 1.75 0 1 0 2.475 2.475l9.8-9.8a6.97 6.97 0 0 0 0-9.8Z" />
+                            </svg>
+                        </span>
+                        <h2 class="text-xl font-bold tracking-wide">Spell Slots</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Level 1 Slots -->
+                        <div class="bg-gray-950 p-3 rounded-lg border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <div>
+                                <span class="font-semibold text-cyan-400 text-sm tracking-wide">1st Level Slots</span>
+                                <div id="slot-dots-1" class="flex gap-1.5 mt-1"></div>
+                            </div>
+                            <div class="flex items-center gap-2 w-full sm:w-auto">
+                                <span class="text-xs text-gray-500 mr-1">Max:</span>
+                                <input type="number" id="max-slots-1" value="4" min="0" onchange="updateMaxSlots(1, this.value)" class="w-12 bg-gray-900 border border-gray-750 text-center text-white rounded px-1 py-0.5 text-xs mr-2 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                <div class="flex gap-1 flex-1 sm:flex-none">
+                                    <button onclick="adjustSlots(1, -1)" class="flex-1 sm:flex-none px-3 py-1 bg-gray-800 hover:bg-gray-700 rounded text-sm font-bold transition active:scale-95">-</button>
+                                    <span id="val-slots-1" class="px-3 py-1 bg-gray-900 rounded font-semibold text-xs border border-gray-800 min-w-[32px] text-center">4</span>
+                                    <button onclick="adjustSlots(1, 1)" class="flex-1 sm:flex-none px-3 py-1 bg-gray-800 hover:bg-gray-700 rounded text-sm font-bold transition active:scale-95">+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Level 2 Slots -->
+                        <div class="bg-gray-950 p-3 rounded-lg border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <div>
+                                <span class="font-semibold text-cyan-400 text-sm tracking-wide">2nd Level Slots</span>
+                                <div id="slot-dots-2" class="flex gap-1.5 mt-1"></div>
+                            </div>
+                            <div class="flex items-center gap-2 w-full sm:w-auto">
+                                <span class="text-xs text-gray-500 mr-1">Max:</span>
+                                <input type="number" id="max-slots-2" value="3" min="0" onchange="updateMaxSlots(2, this.value)" class="w-12 bg-gray-900 border border-gray-750 text-center text-white rounded px-1 py-0.5 text-xs mr-2 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                <div class="flex gap-1 flex-1 sm:flex-none">
+                                    <button onclick="adjustSlots(2, -1)" class="flex-1 sm:flex-none px-3 py-1 bg-gray-800 hover:bg-gray-700 rounded text-sm font-bold transition active:scale-95">-</button>
+                                    <span id="val-slots-2" class="px-3 py-1 bg-gray-900 rounded font-semibold text-xs border border-gray-800 min-w-[32px] text-center">3</span>
+                                    <button onclick="adjustSlots(2, 1)" class="flex-1 sm:flex-none px-3 py-1 bg-gray-800 hover:bg-gray-700 rounded text-sm font-bold transition active:scale-95">+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Level 3 Slots -->
+                        <div class="bg-gray-950 p-3 rounded-lg border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <div>
+                                <span class="font-semibold text-cyan-400 text-sm tracking-wide">3rd Level Slots</span>
+                                <div id="slot-dots-3" class="flex gap-1.5 mt-1"></div>
+                            </div>
+                            <div class="flex items-center gap-2 w-full sm:w-auto">
+                                <span class="text-xs text-gray-500 mr-1">Max:</span>
+                                <input type="number" id="max-slots-3" value="2" min="0" onchange="updateMaxSlots(3, this.value)" class="w-12 bg-gray-900 border border-gray-750 text-center text-white rounded px-1 py-0.5 text-xs mr-2 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                                <div class="flex gap-1 flex-1 sm:flex-none">
+                                    <button onclick="adjustSlots(3, -1)" class="flex-1 sm:flex-none px-3 py-1 bg-gray-800 hover:bg-gray-700 rounded text-sm font-bold transition active:scale-95">-</button>
+                                    <span id="val-slots-3" class="px-3 py-1 bg-gray-900 rounded font-semibold text-xs border border-gray-800 min-w-[32px] text-center">2</span>
+                                    <button onclick="adjustSlots(3, 1)" class="flex-1 sm:flex-none px-3 py-1 bg-gray-800 hover:bg-gray-700 rounded text-sm font-bold transition active:scale-95">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- INNATE MAGIC & FEATURES CARD -->
+                <section class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg space-y-6">
+                    <div class="flex items-center gap-2 border-b border-gray-800 pb-3">
+                        <span class="text-purple-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 21l8.982-11.795-1.32-.135m-5.45.377L12 3L3.018 14.795l1.32.135" />
+                            </svg>
+                        </span>
+                        <h2 class="text-xl font-bold tracking-wide">Innate Magic &amp; Features</h2>
+                    </div>
+
+                    <!-- TIDES OF CHAOS -->
+                    <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-sm text-purple-400">Tides of Chaos</span>
+                            <span id="tides-status-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 border border-emerald-800 text-emerald-400">READY</span>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-3">Gain advantage on one d20 roll. Recharges on Wild Magic Surge or Long Rest.</p>
+                        <div class="flex gap-2">
+                            <button id="tides-toggle-btn" onclick="toggleTides()" class="flex-1 py-2 rounded text-xs font-bold transition duration-150 active:scale-95 bg-emerald-600 hover:bg-emerald-500 border-emerald-500 text-white">
+                                Spend Charge
+                            </button>
+                            <button onclick="rechargeTides()" class="px-3 py-2 rounded text-xs font-bold bg-gray-800 hover:bg-gray-700 text-gray-300 transition duration-150 active:scale-95">
+                                Force Recharge
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- HELLISH REBUKE -->
+                    <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-sm text-red-400">Hellish Rebuke</span>
+                                <span class="text-[10px] text-gray-500">Innate Spell (1/Long Rest)</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs text-gray-500 mr-1">Uses:</span>
+                                <button onclick="adjustHellishRebuke(-1)" class="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-xs font-bold rounded transition">-</button>
+                                <span id="val-rebuke" class="px-2.5 py-1 bg-gray-900 border border-gray-800 rounded font-semibold text-xs min-w-[28px] text-center text-amber-500">1</span>
+                                <button onclick="adjustHellishRebuke(1)" class="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-xs font-bold rounded transition">+</button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-3">Reaction triggered by taking damage. Dexterity saving throw or 2d10 fire damage.</p>
+                        <button id="rebuke-cast-btn" onclick="castHellishRebuke()" class="w-full py-2 bg-red-900/40 hover:bg-red-900/60 border border-red-800 text-red-200 rounded text-xs font-bold transition active:scale-95">
+                            Cast Hellish Rebuke
+                        </button>
+                    </div>
+
+                    <!-- DARKNESS -->
+                    <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-sm text-purple-400">Darkness</span>
+                                <span class="text-[10px] text-gray-500">Innate Spell (1/Long Rest)</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs text-gray-500 mr-1">Uses:</span>
+                                <button onclick="adjustDarkness(-1)" class="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-xs font-bold rounded transition">-</button>
+                                <span id="val-darkness" class="px-2.5 py-1 bg-gray-900 border border-gray-800 rounded font-semibold text-xs min-w-[28px] text-center text-amber-500">1</span>
+                                <button onclick="adjustDarkness(1)" class="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-xs font-bold rounded transition">+</button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-3">Concentration, up to 10 minutes. Magical darkness fills a 15-foot radius sphere. Nonmagical light cannot illuminate it.</p>
+                        <button id="darkness-cast-btn" onclick="castDarkness()" class="w-full py-2 bg-purple-950/40 hover:bg-purple-900/60 border border-purple-800 text-purple-200 rounded text-xs font-bold transition active:scale-95">
+                            Cast Darkness
+                        </button>
+                    </div>
+                </section>
+
+                <!-- CUSTOM TRACKERS SECTION -->
+                <section class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold tracking-wide flex items-center gap-2 text-amber-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            Custom Trackers
+                        </h2>
+                    </div>
+
+                    <form id="custom-tracker-form" onsubmit="addCustomTracker(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4 p-3 bg-gray-950 rounded-lg border border-gray-800">
+                        <input type="text" id="custom-name" placeholder="Name (e.g. Hit Dice)" required class="bg-gray-900 border border-gray-750 rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
+                        <input type="number" id="custom-val" placeholder="Value" required min="0" class="bg-gray-900 border border-gray-750 rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
+                        <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-gray-950 font-bold rounded py-1.5 text-sm transition duration-150">
+                            Create Tracker
+                        </button>
+                    </form>
+
+                    <!-- Custom Trackers Mount Point -->
+                    <div id="custom-trackers-list" class="space-y-3">
+                        <p class="text-xs text-gray-500 text-center py-2" id="empty-trackers-msg">No custom trackers currently active.</p>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Right Column: Dice Roller, Logs & Utilities -->
+            <div class="md:col-span-4 space-y-6">
+
+                <!-- INTEGRATED DICE ROLLER -->
+                <section class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
+                    <h2 class="text-lg font-bold tracking-wide mb-3 flex items-center gap-2 text-amber-500">
+                        <!-- Dice Icon SVG -->
+                        <svg class="w-5 h-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <circle cx="15.5" cy="15.5" r="1.5"></circle>
+                            <circle cx="15.5" cy="8.5" r="1.5"></circle>
+                            <circle cx="8.5" cy="15.5" r="1.5"></circle>
+                        </svg>
+                        Quick Roll System
+                    </h2>
+
+                    <!-- Main Die Buttons -->
+                    <div class="grid grid-cols-3 gap-2 mb-3">
+                        <button onclick="rollDie(20)" class="py-2 bg-gray-850 hover:bg-gray-800 border border-gray-700 text-gray-200 text-sm font-semibold rounded transition duration-100 active:scale-95">d20</button>
+                        <button onclick="rollDie(12)" class="py-2 bg-gray-850 hover:bg-gray-800 border border-gray-700 text-gray-200 text-sm font-semibold rounded transition duration-100 active:scale-95">d12</button>
+                        <button onclick="rollDie(10)" class="py-2 bg-gray-850 hover:bg-gray-800 border border-gray-700 text-gray-200 text-sm font-semibold rounded transition duration-100 active:scale-95">d10</button>
+                        <button onclick="rollDie(8)" class="py-2 bg-gray-850 hover:bg-gray-800 border border-gray-700 text-gray-200 text-sm font-semibold rounded transition duration-100 active:scale-95">d8</button>
+                        <button onclick="rollDie(6)" class="py-2 bg-gray-850 hover:bg-gray-800 border border-gray-700 text-gray-200 text-sm font-semibold rounded transition duration-100 active:scale-95">d6</button>
+                        <button onclick="rollDie(4)" class="py-2 bg-gray-850 hover:bg-gray-800 border border-gray-700 text-gray-200 text-sm font-semibold rounded transition duration-100 active:scale-95">d4</button>
+                    </div>
+
+                    <!-- Dice Modifiers and Multi-roll -->
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Quantity</span>
+                            <input type="number" id="dice-qty" value="1" min="1" max="100" class="bg-gray-950 border border-gray-800 text-center text-white rounded p-1.5 text-xs focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Modifier</span>
+                            <input type="number" id="dice-mod" value="0" class="bg-gray-950 border border-gray-800 text-center text-white rounded p-1.5 text-xs focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Output display -->
+                    <div class="bg-gray-950 border border-gray-800 rounded p-3 text-center">
+                        <div class="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Roll Result</div>
+                        <div id="dice-result-val" class="text-3xl font-extrabold text-amber-500">--</div>
+                        <div id="dice-result-details" class="text-[11px] text-gray-550 italic mt-1">Roll details will display here</div>
+                    </div>
+                </section>
+
+                <!-- ACTIVITY LOGS -->
+                <section class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg flex flex-col h-80">
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="text-lg font-bold tracking-wide text-gray-200">Activity Log</h2>
+                        <button onclick="clearLogs()" class="text-[11px] text-gray-400 hover:text-red-400 transition">Clear</button>
+                    </div>
+
+                    <!-- Logs Box -->
+                    <div id="logs-container" class="bg-gray-950 border border-gray-800 rounded-lg p-3 flex-1 overflow-y-auto space-y-2 text-xs font-mono">
+                        <!-- Log lines inserted here dynamically -->
+                    </div>
+                </section>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script Block containing all logic -->
+    <script>
+        const STORAGE_KEY = 'dnd_sorcerer_tracker_state_v5';
+
+        // Default state definition
+        const DEFAULT_STATE = {
+            hp: {
+                current: 42,
+                max: 42,
+                temp: 0
+            },
+            sp: {
+                current: 5,
+                max: 5
+            },
+            spellSlots: {
+                1: { current: 4, max: 4 },
+                2: { current: 3, max: 3 },
+                3: { current: 2, max: 2 }
+            },
+            tides: {
+                ready: true
+            },
+            hellishRebuke: {
+                current: 1,
+                max: 1
+            },
+            darkness: {
+                current: 1,
+                max: 1
+            },
+            customTrackers: [],
+            logs: [] // Persist activity logs directly in browser database
+        };
+
+        // Initialize state variable
+        let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+
+        // Initialize state on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedState();
+            renderApp();
+            // Only log initial message if logs are currently completely empty
+            if (state.logs.length === 0) {
+                logMessage("Tracker initialized. Ready for campaign tracking.");
+            } else {
+                renderLogs();
+            }
+        });
+
+        // Core state saving mechanism
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                triggerSaveFeedback();
+            } catch (e) {
+                // Fail silently in highly sandboxed/restricted environments
+                console.error("Local Storage Save Error: ", e);
+            }
+        }
+
+        // Trigger visual "Saved to LocalStorage" feedback badge in the header
+        function triggerSaveFeedback() {
+            const indicator = document.getElementById('save-indicator');
+            if (indicator) {
+                indicator.classList.remove('opacity-0');
+                indicator.classList.add('opacity-100');
+                
+                // Clear existing timeout to prevent rapid-click clipping
+                clearTimeout(window.saveIndicatorTimeout);
+                window.saveIndicatorTimeout = setTimeout(() => {
+                    indicator.classList.remove('opacity-100');
+                    indicator.classList.add('opacity-0');
+                }, 1500);
+            }
+        }
+
+        // Safely pull state back out of local storage
+        function loadSavedState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    // Standard structural verification and automatic backward compatibility upgrade
+                    if (!parsed.spellSlots) {
+                        parsed.spellSlots = JSON.parse(JSON.stringify(DEFAULT_STATE.spellSlots));
+                    }
+                    if (!parsed.hellishRebuke) {
+                        parsed.hellishRebuke = JSON.parse(JSON.stringify(DEFAULT_STATE.hellishRebuke));
+                    }
+                    if (!parsed.darkness) {
+                        parsed.darkness = JSON.parse(JSON.stringify(DEFAULT_STATE.darkness));
+                    }
+                    if (!parsed.logs) {
+                        parsed.logs = [];
+                    }
+                    if (!parsed.customTrackers) {
+                        parsed.customTrackers = [];
+                    }
+                    state = parsed;
+                }
+            } catch (e) {
+                state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+            }
+        }
+
+        // Render functions to synchronize State with DOM
+        function renderApp() {
+            // HP Elements
+            document.getElementById('current-hp-val').textContent = state.hp.current;
+            document.getElementById('max-hp-val').textContent = state.hp.max;
+            document.getElementById('max-hp-input').value = state.hp.max;
+            document.getElementById('temp-hp-input').value = state.hp.temp;
+            
+            const rawPct = (state.hp.current / state.hp.max) * 100;
+            const hpProgressPct = Math.min(100, Math.max(0, rawPct));
+            document.getElementById('hp-progress').style.width = `${hpProgressPct}%`;
+
+            // Sorcery Points Elements
+            document.getElementById('current-sp-val').textContent = state.sp.current;
+            document.getElementById('max-sp-val').textContent = state.sp.max;
+            document.getElementById('max-sp-input').value = state.sp.max;
+
+            const spPct = state.sp.max > 0 ? (state.sp.current / state.sp.max) * 100 : 0;
+            document.getElementById('sp-progress').style.width = `${Math.min(100, Math.max(0, spPct))}%`;
+
+            // Spell Slots Elements
+            for (let lvl = 1; lvl <= 3; lvl++) {
+                const slotData = state.spellSlots[lvl];
+                document.getElementById(`val-slots-${lvl}`).textContent = slotData.current;
+                document.getElementById(`max-slots-${lvl}`).value = slotData.max;
+                renderSlotDots(lvl, slotData.current, slotData.max);
+            }
+
+            // Tides of Chaos State
+            const tidesBadge = document.getElementById('tides-status-badge');
+            const tidesBtn = document.getElementById('tides-toggle-btn');
+            if (state.tides.ready) {
+                tidesBadge.textContent = "READY";
+                tidesBadge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 border border-emerald-800 text-emerald-400";
+                tidesBtn.textContent = "Spend Charge";
+                tidesBtn.className = "flex-1 py-2 rounded text-xs font-bold transition duration-150 active:scale-95 bg-emerald-600 hover:bg-emerald-500 border-emerald-500 text-white";
+            } else {
+                tidesBadge.textContent = "SPENT";
+                tidesBadge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-950 border border-red-800 text-red-400";
+                tidesBtn.textContent = "Trigger Surge / Reset";
+                tidesBtn.className = "flex-1 py-2 rounded text-xs font-bold transition duration-150 active:scale-95 bg-amber-600 hover:bg-amber-500 border-amber-550 text-gray-950";
+            }
+
+            // Hellish Rebuke UI updates
+            document.getElementById('val-rebuke').textContent = state.hellishRebuke.current;
+            const rebukeCastBtn = document.getElementById('rebuke-cast-btn');
+            if (state.hellishRebuke.current <= 0) {
+                rebukeCastBtn.textContent = "Cast (Out of Charges)";
+                rebukeCastBtn.disabled = true;
+                rebukeCastBtn.className = "w-full py-2 bg-gray-800 border border-gray-700 text-gray-500 rounded text-xs font-bold cursor-not-allowed";
+            } else {
+                rebukeCastBtn.textContent = "Cast Hellish Rebuke";
+                rebukeCastBtn.disabled = false;
+                rebukeCastBtn.className = "w-full py-2 bg-red-900/40 hover:bg-red-900/60 border border-red-800 text-red-200 rounded text-xs font-bold transition active:scale-95";
+            }
+
+            // Darkness UI updates
+            document.getElementById('val-darkness').textContent = state.darkness.current;
+            const darknessCastBtn = document.getElementById('darkness-cast-btn');
+            if (state.darkness.current <= 0) {
+                darknessCastBtn.textContent = "Cast (Out of Charges)";
+                darknessCastBtn.disabled = true;
+                darknessCastBtn.className = "w-full py-2 bg-gray-800 border border-gray-700 text-gray-500 rounded text-xs font-bold cursor-not-allowed";
+            } else {
+                darknessCastBtn.textContent = "Cast Darkness";
+                darknessCastBtn.disabled = false;
+                darknessCastBtn.className = "w-full py-2 bg-purple-950/40 hover:bg-purple-900/60 border border-purple-800 text-purple-200 rounded text-xs font-bold transition active:scale-95";
+            }
+
+            // Render Custom Trackers
+            renderCustomTrackers();
+        }
+
+        // Render visual dot representations for spell slots
+        function renderSlotDots(lvl, current, max) {
+            const container = document.getElementById(`slot-dots-${lvl}`);
+            container.innerHTML = '';
+            for (let i = 0; i < max; i++) {
+                const dot = document.createElement('div');
+                dot.className = `w-2.5 h-2.5 rounded-full transition-colors duration-200 ${
+                    i < current ? 'bg-cyan-500' : 'bg-gray-800 border border-gray-700'
+                }`;
+                container.appendChild(dot);
+            }
+        }
+
+        // Adjust Core HP mechanics
+        function adjustHP(amount) {
+            let changeLog = "";
+            if (amount < 0) {
+                // Apply Damage: Resolve via Temp HP first
+                const damage = Math.abs(amount);
+                if (state.hp.temp > 0) {
+                    if (state.hp.temp >= damage) {
+                        state.hp.temp -= damage;
+                        changeLog = `Damage applied to Temp HP (${amount}). Current Temp HP: ${state.hp.temp}.`;
+                    } else {
+                        const leftover = damage - state.hp.temp;
+                        changeLog = `Temp HP depleted (${state.hp.temp} absorbed). ${leftover} damage applied to HP.`;
+                        state.hp.temp = 0;
+                        state.hp.current = Math.max(0, state.hp.current - leftover);
+                    }
+                } else {
+                    state.hp.current = Math.max(0, state.hp.current - damage);
+                    changeLog = `Character took ${damage} damage. Current HP: ${state.hp.current}.`;
+                }
+            } else {
+                // Apply Healing
+                const preHeal = state.hp.current;
+                state.hp.current = Math.min(state.hp.max, state.hp.current + amount);
+                const actualHealed = state.hp.current - preHeal;
+                changeLog = `Healed ${actualHealed} points. Current HP: ${state.hp.current}.`;
+            }
+            
+            saveToLocalStorage();
+            renderApp();
+            logMessage(changeLog);
+        }
+
+        function applyCustomHP(isHealing) {
+            const valInput = document.getElementById('custom-hp-adjust');
+            const parsed = parseInt(valInput.value, 10);
+            if (isNaN(parsed) || parsed <= 0) return;
+
+            const changeAmount = isHealing ? parsed : -parsed;
+            adjustHP(changeAmount);
+            valInput.value = "";
+        }
+
+        // Max HP configuration
+        function updateMaxHP(value) {
+            const parsed = parseInt(value, 10);
+            if (isNaN(parsed) || parsed < 1) return;
+            state.hp.max = parsed;
+            state.hp.current = Math.min(state.hp.max, state.hp.current);
+            saveToLocalStorage();
+            renderApp();
+            logMessage(`Max HP updated to ${parsed}.`);
+        }
+
+        function updateTempHP(value) {
+            const parsed = parseInt(value, 10);
+            if (isNaN(parsed) || parsed < 0) return;
+            state.hp.temp = parsed;
+            saveToLocalStorage();
+            renderApp();
+            logMessage(`Temporary HP set to ${parsed}.`);
+        }
+
+        // Sorcery Point mechanics
+        function adjustSP(amount) {
+            const oldVal = state.sp.current;
+            state.sp.current = Math.min(state.sp.max, Math.max(0, state.sp.current + amount));
+            const delta = state.sp.current - oldVal;
+
+            if (delta !== 0) {
+                const actionText = delta > 0 ? "Gained" : "Spent";
+                logMessage(`${actionText} ${Math.abs(delta)} Sorcery Point(s). Current: ${state.sp.current}.`);
+                saveToLocalStorage();
+                renderApp();
+            }
+        }
+
+        function updateMaxSP(value) {
+            const parsed = parseInt(value, 10);
+            if (isNaN(parsed) || parsed < 0) return;
+            state.sp.max = parsed;
+            state.sp.current = Math.min(state.sp.max, state.sp.current);
+            saveToLocalStorage();
+            renderApp();
+            logMessage(`Max Sorcery Points updated to ${parsed}.`);
+        }
+
+        function spendSorceryCost(points, optionName) {
+            if (state.sp.current >= points) {
+                adjustSP(-points);
+                logMessage(`Used Metamagic [${optionName}] costing ${points} Sorcery Point(s).`);
+            } else {
+                logMessage(`Insufficient Sorcery Points for [${optionName}] (Required: ${points}, Available: ${state.sp.current}).`);
+            }
+        }
+
+        // Spell Slot mechanics
+        function adjustSlots(lvl, amount) {
+            const slotData = state.spellSlots[lvl];
+            if (!slotData) return;
+
+            const oldVal = slotData.current;
+            slotData.current = Math.min(slotData.max, Math.max(0, slotData.current + amount));
+            const delta = slotData.current - oldVal;
+
+            if (delta !== 0) {
+                const actionText = delta > 0 ? "Restored" : "Expended";
+                logMessage(`${actionText} Level ${lvl} spell slot. Current remaining: ${slotData.current}/${slotData.max}.`);
+                saveToLocalStorage();
+                renderApp();
+            }
+        }
+
+        function updateMaxSlots(lvl, value) {
+            const parsed = parseInt(value, 10);
+            if (isNaN(parsed) || parsed < 0) return;
+            
+            const slotData = state.spellSlots[lvl];
+            if (!slotData) return;
+
+            slotData.max = parsed;
+            slotData.current = Math.min(slotData.max, slotData.current);
+            saveToLocalStorage();
+            renderApp();
+            logMessage(`Max Level ${lvl} slots updated to ${parsed}.`);
+        }
+
+        // Tides of Chaos Feature
+        function toggleTides() {
+            if (state.tides.ready) {
+                state.tides.ready = false;
+                logMessage("Tides of Chaos activated. Gained advantage on d20 roll. Charge spent.");
+            } else {
+                state.tides.ready = true;
+                logMessage("Triggered Wild Magic Surge sequence. Tides of Chaos charge recovered.");
+                const d20Roll = Math.floor(Math.random() * 20) + 1;
+                logMessage(`Surge Check Result: Rolled [${d20Roll}] on d20.`);
+            }
+            saveToLocalStorage();
+            renderApp();
+        }
+
+        function rechargeTides() {
+            state.tides.ready = true;
+            saveToLocalStorage();
+            renderApp();
+            logMessage("Tides of Chaos recharged via external interaction.");
+        }
+
+        // Hellish Rebuke Feature
+        function adjustHellishRebuke(amount) {
+            const oldVal = state.hellishRebuke.current;
+            state.hellishRebuke.current = Math.min(state.hellishRebuke.max, Math.max(0, state.hellishRebuke.current + amount));
+            const delta = state.hellishRebuke.current - oldVal;
+
+            if (delta !== 0) {
+                const actionText = delta > 0 ? "Restored" : "Spent";
+                logMessage(`${actionText} Hellish Rebuke. Uses remaining: ${state.hellishRebuke.current}/${state.hellishRebuke.max}.`);
+                saveToLocalStorage();
+                renderApp();
+            }
+        }
+
+        function castHellishRebuke() {
+            if (state.hellishRebuke.current > 0) {
+                adjustHellishRebuke(-1);
+                let totalDamage = 0;
+                let rolls = [];
+                for (let i = 0; i < 3; i++) {
+                    const roll = Math.floor(Math.random() * 10) + 1;
+                    rolls.push(roll);
+                    totalDamage += roll;
+                }
+                logMessage(`Cast Hellish Rebuke! Roll: 3d10 fire damage. Rolls: [${rolls.join(', ')}]. Total Damage: ${totalDamage}.`);
+            } else {
+                logMessage("No Hellish Rebuke uses available.");
+            }
+        }
+
+        // Darkness Feature
+        function adjustDarkness(amount) {
+            const oldVal = state.darkness.current;
+            state.darkness.current = Math.min(state.darkness.max, Math.max(0, state.darkness.current + amount));
+            const delta = state.darkness.current - oldVal;
+
+            if (delta !== 0) {
+                const actionText = delta > 0 ? "Restored" : "Spent";
+                logMessage(`${actionText} Darkness. Uses remaining: ${state.darkness.current}/${state.darkness.max}.`);
+                saveToLocalStorage();
+                renderApp();
+            }
+        }
+
+        function castDarkness() {
+            if (state.darkness.current > 0) {
+                adjustDarkness(-1);
+                logMessage("Cast Darkness! A 15-foot-radius sphere of magical darkness spreads from a point within range (requires Concentration).");
+            } else {
+                logMessage("No Darkness uses available.");
+            }
+        }
+
+        // Long Rest Execution
+        function triggerLongRest() {
+            state.hp.current = state.hp.max;
+            state.hp.temp = 0;
+            state.sp.current = state.sp.max;
+            state.tides.ready = true;
+            state.hellishRebuke.current = state.hellishRebuke.max;
+            state.darkness.current = state.darkness.max;
+            
+            for (let lvl in state.spellSlots) {
+                state.spellSlots[lvl].current = state.spellSlots[lvl].max;
+            }
+
+            saveToLocalStorage();
+            renderApp();
+            logMessage("Long Rest completed. HP, Sorcery Points, Spell Slots, Tides of Chaos, Hellish Rebuke, and Darkness fully restored.");
+        }
+
+        // Custom Trackers UI Logic
+        function addCustomTracker(event) {
+            event.preventDefault();
+            const nameInput = document.getElementById('custom-name');
+            const valInput = document.getElementById('custom-val');
+
+            const name = nameInput.value.trim();
+            const val = parseInt(valInput.value, 10);
+
+            if (name === "" || isNaN(val)) return;
+
+            const newTracker = {
+                id: Date.now().toString(),
+                name: name,
+                current: val
+            };
+
+            state.customTrackers.push(newTracker);
+            saveToLocalStorage();
+            renderApp();
+
+            logMessage(`Custom tracker "${name}" added with starting value: ${val}.`);
+            
+            nameInput.value = "";
+            valInput.value = "";
+        }
+
+        function adjustCustomTracker(id, amount) {
+            const tracker = state.customTrackers.find(t => t.id === id);
+            if (!tracker) return;
+
+            tracker.current = Math.max(0, tracker.current + amount);
+            saveToLocalStorage();
+            renderApp();
+            logMessage(`Tracker "${tracker.name}" set to ${tracker.current}.`);
+        }
+
+        function removeCustomTracker(id) {
+            const tracker = state.customTrackers.find(t => t.id === id);
+            if (!tracker) return;
+
+            state.customTrackers = state.customTrackers.filter(t => t.id !== id);
+            saveToLocalStorage();
+            renderApp();
+            logMessage(`Tracker "${tracker.name}" removed.`);
+        }
+
+        function renderCustomTrackers() {
+            const listContainer = document.getElementById('custom-trackers-list');
+            const emptyMsg = document.getElementById('empty-trackers-msg');
+
+            const trackerElements = listContainer.querySelectorAll('.dynamic-tracker');
+            trackerElements.forEach(el => el.remove());
+
+            if (state.customTrackers.length === 0) {
+                emptyMsg.style.display = 'block';
+                return;
+            }
+
+            emptyMsg.style.display = 'none';
+
+            state.customTrackers.forEach(tracker => {
+                const row = document.createElement('div');
+                row.className = "dynamic-tracker flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-gray-950 border border-gray-800 rounded-lg gap-2";
+                
+                row.innerHTML = `
+                    <div class="flex-1">
+                        <div class="font-bold text-sm tracking-wide text-gray-300">${escapeHtml(tracker.name)}</div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <span class="px-3 py-1 bg-gray-900 border border-gray-800 rounded font-semibold text-amber-500 text-sm min-w-[32px] text-center">${tracker.current}</span>
+                        <div class="flex gap-1 flex-1 sm:flex-initial">
+                            <button onclick="adjustCustomTracker('${tracker.id}', -1)" class="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-xs font-semibold rounded text-gray-300">-1</button>
+                            <button onclick="adjustCustomTracker('${tracker.id}', 1)" class="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-xs font-semibold rounded text-gray-300">+1</button>
+                            <button onclick="removeCustomTracker('${tracker.id}')" class="px-2 py-1 bg-red-950/40 hover:bg-red-950/80 text-red-400 text-xs font-semibold rounded border border-red-900 ml-1">Del</button>
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(row);
+            });
+        }
+
+        // Sanitizing helper
+        function escapeHtml(text) {
+            if (typeof text !== 'string') {
+                text = String(text);
+            }
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Dice Engine Execution
+        function rollDie(sides) {
+            const qtyInput = document.getElementById('dice-qty');
+            const modInput = document.getElementById('dice-mod');
+
+            let qty = parseInt(qtyInput.value, 10);
+            let mod = parseInt(modInput.value, 10);
+
+            if (isNaN(qty) || qty < 1) qty = 1;
+            if (isNaN(mod)) mod = 0;
+
+            let rolls = [];
+            let total = 0;
+
+            for (let i = 0; i < qty; i++) {
+                const roll = Math.floor(Math.random() * sides) + 1;
+                rolls.push(roll);
+                total += roll;
+            }
+
+            const modifiedTotal = total + mod;
+            const modString = mod >= 0 ? `+${mod}` : `${mod}`;
+            
+            document.getElementById('dice-result-val').textContent = modifiedTotal;
+            document.getElementById('dice-result-details').textContent = `${qty}d${sides} (${rolls.join(' + ')}) ${mod !== 0 ? modString : ''}`;
+
+            logMessage(`Rolled ${qty}d${sides}${mod !== 0 ? modString : ''}: Result = ${modifiedTotal} (${rolls.join(', ')})`);
+        }
+
+        // Activity log systems with Local Storage persistence
+        function logMessage(text) {
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0];
+            
+            // Build simple logger record
+            const newLog = {
+                timestamp: timeStr,
+                text: text
+            };
+
+            // Push to state & cap log array length at 40 rows to protect local storage space limits
+            state.logs.push(newLog);
+            if (state.logs.length > 40) {
+                state.logs.shift();
+            }
+
+            // Save changes directly to the persistent state database
+            saveToLocalStorage();
+            renderLogs();
+        }
+
+        // Render current log state array onto DOM console
+        function renderLogs() {
+            const container = document.getElementById('logs-container');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            state.logs.forEach(log => {
+                const logEntry = document.createElement('div');
+                logEntry.className = "text-gray-400 border-b border-gray-900/50 pb-1";
+                logEntry.innerHTML = `<span class="text-amber-600 font-semibold">[${log.timestamp}]</span> ${escapeHtml(log.text)}`;
+                container.appendChild(logEntry);
+            });
+            
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function clearLogs() {
+            state.logs = [];
+            saveToLocalStorage();
+            renderLogs();
+            logMessage("System log cleared.");
+        }
+
+        // Global Reset execution
+        function resetAll() {
+            state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+            saveToLocalStorage();
+            renderApp();
+            renderLogs();
+            logMessage("All character parameters reset to defaults.");
+        }
+    </script>
+</body>
+</html>
