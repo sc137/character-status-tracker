@@ -4,11 +4,9 @@ A lightweight, fully interactive, single-file HTML5 web application designed to 
 
 ## 🚀 LIVE DEMO
 
-> ### 🔗 ACCESS THE LIVE TRACKER HERE:
->
-> ### 👉 [VIEW THE TRACKER LIVE](https://sc137.github.io/character-status-tracker/) 👈
->
-> *(Replace the URL above with your actual GitHub Pages link once you enable it in your repository settings!)*
+### 🔗 ACCESS THE LIVE TRACKER HERE:>
+
+## 👉 [VIEW THE TRACKER LIVE](https://sc137.github.io/character-status-tracker/) 👈
 
 ## ✨ Features
 
