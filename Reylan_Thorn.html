@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0c1514">
+  <meta name="description" content="A field-ready AD&D 2e game tracker for Reylan Thorn.">
+  <title>Reylan Thorn — Game Tracker</title>
+  <style>
+    :root{color-scheme:light;--bg:#f1eadc;--ink:#29332f;--muted:#68736f;--panel:#fffdf7;--panel2:#f4efe4;--line:rgba(53,76,69,.17);--teal:#3f7168;--gold:#976a27;--red:#a34f45;--green:#56805b;--shadow:0 16px 36px rgba(65,52,31,.11)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 8% 0,#e4d7bf 0,transparent 34%),linear-gradient(135deg,rgba(91,70,39,.025) 25%,transparent 25%) 0 0/18px 18px,var(--bg);color:var(--ink);font:16px/1.45 Arial,Helvetica,sans-serif}
+    button,select,input,textarea{font:inherit}button,select{color:inherit}.shell{width:min(1180px,calc(100% - 32px));margin:auto;padding:30px 0 64px}.hero{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:8px 0 24px;border-bottom:1px solid rgba(209,162,83,.55)}
+    .eyebrow,.label{margin:0 0 7px;color:var(--gold);font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.hero h1{margin:0;font:500 clamp(2.8rem,7vw,5.2rem)/.9 Georgia,serif}.tagline{margin:12px 0 0;color:var(--muted)}.seal{width:76px;height:76px;flex:0 0 auto;display:grid;place-items:center;border:1px solid var(--gold);border-radius:50%;box-shadow:inset 0 0 0 6px var(--bg),inset 0 0 0 7px rgba(151,106,39,.28);color:var(--gold);font:700 1.5rem Georgia,serif}
+    .top-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:14px 0}.persist{display:inline-flex;align-items:center;gap:7px;margin-right:auto;color:var(--muted);font-size:.76rem}.persist-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(86,128,91,.12)}.button{min-height:40px;border:1px solid rgba(151,106,39,.42);border-radius:9px;background:#faf6ed;padding:8px 13px;cursor:pointer;font-weight:700}.button:hover{background:#eee5d5}.button.primary{background:var(--gold);border-color:var(--gold);color:#fffdf7}.button.danger{border-color:rgba(163,79,69,.38);color:var(--red)}.button.small{min-height:32px;padding:5px 9px;font-size:.8rem}.button:focus-visible,.icon-button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid rgba(151,106,39,.38);outline-offset:2px}
+    .combat{display:grid;grid-template-columns:1.45fr .9fr .9fr;gap:14px;margin-bottom:14px}.card,.panel{background:rgba(255,253,247,.97);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}.hp-card{padding:18px 20px}.hp-line{display:flex;align-items:center;justify-content:space-between;gap:16px}.hp-value{display:flex;align-items:baseline;gap:8px}.hp-value strong,.big-stat{font:500 3.5rem Georgia,serif}.hp-value span{color:var(--muted)}.hp-actions{display:flex;gap:8px}.icon-button{width:43px;height:43px;border:1px solid rgba(151,106,39,.42);border-radius:50%;background:#fffdf8;color:var(--ink);font-size:1.5rem;cursor:pointer}.hp-form{display:flex;gap:8px;margin-top:12px}.hp-form input{width:82px;border:1px solid var(--line);border-radius:8px;background:#fffdf8;color:var(--ink);padding:8px}.stat-card{padding:18px 20px;display:flex;flex-direction:column}.stat-card .big-stat{margin:auto 0 0}.detail{color:var(--muted);font-size:.77rem}
+    .dashboard{display:grid;grid-template-columns:1.3fr 1fr;gap:14px;align-items:start}.stack{display:grid;gap:14px}.panel{padding:20px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.panel-head h2{margin:0;font:500 1.45rem Georgia,serif}.panel-head p{margin:3px 0 0;color:var(--muted);font-size:.78rem}.save-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.save{min-height:96px;display:flex;flex-direction:column;justify-content:space-between;border-radius:10px;background:var(--panel2);padding:11px}.save span{color:var(--muted);font-size:.72rem}.save strong{font:500 2rem Georgia,serif}
+    .resource-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.resource{border-radius:11px;background:var(--panel2);padding:13px}.resource-title{display:flex;align-items:center;justify-content:space-between;gap:10px}.resource-title strong{font-family:Georgia,serif;font-weight:500}.charges{display:flex;align-items:center;justify-content:space-between;margin-top:14px}.charge-pips{display:flex;gap:5px;flex-wrap:wrap}.pip{width:18px;height:18px;border:1px solid var(--teal);border-radius:50%;background:transparent;cursor:pointer;padding:0}.pip.full{background:var(--gold);border-color:var(--gold)}.sunrise{margin-top:12px;width:100%}
+    .list{display:grid;gap:8px}.track-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 11px;border-radius:9px;background:var(--panel2)}.track-row.used{opacity:.55}.track-row button{min-width:74px}.subtle{color:var(--muted);font-size:.78rem}.cantrips{display:flex;flex-wrap:wrap;gap:7px}.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;background:#faf6ed;padding:7px 10px;font-size:.82rem}.chip.cantrip{border-color:rgba(151,106,39,.36);color:#80591f}.prepared-level{margin-top:15px}.level-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}.level-head h3{margin:0;color:var(--gold);font-size:.78rem;letter-spacing:.09em;text-transform:uppercase}.level-head span{color:var(--muted);font-size:.75rem}.prepared-list{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.spell-slot{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;min-height:46px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);padding:8px 9px}.spell-slot.cast{opacity:.5;text-decoration:line-through}.spell-slot.empty{border-style:dashed;color:var(--muted)}
+    .ring-slots{display:grid;gap:9px}.ring-slot{display:grid;grid-template-columns:28px 1fr auto;gap:9px;align-items:center}.ring-number{width:28px;height:28px;display:grid;place-items:center;border:1px solid rgba(151,106,39,.38);border-radius:50%;color:var(--gold);font:700 .8rem Georgia,serif}.ring-slot select{width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;background:#fffdf8;padding:9px}.ring-slot.expended select{opacity:.5;text-decoration:line-through}
+    .spellbook{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}.spellbook[hidden]{display:none}.spellbook-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.spellbook-group{border-radius:10px;background:#f8f3e9;padding:12px}.spellbook-group h3{margin:0 0 8px;color:var(--gold);font:700 .78rem Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase}.spell-choice{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 2px;font-size:.82rem}.quantity{display:grid;grid-template-columns:28px 24px 28px;align-items:center;text-align:center}.qty-button{width:28px;height:28px;border:1px solid var(--line);border-radius:7px;background:#fffdf8;color:var(--ink);cursor:pointer;font-weight:800}.qty-button:disabled{cursor:not-allowed;opacity:.35}.spell-count{font-weight:800;color:var(--gold)}.notice{margin:13px 0 0;padding:10px 12px;border-left:3px solid var(--gold);background:rgba(151,106,39,.07);color:var(--muted);font-size:.8rem}.field-notes{margin-top:14px}.field-notes textarea{display:block;width:100%;min-height:190px;resize:vertical;border:1px solid var(--line);border-radius:10px;background:#fffdf8;color:var(--ink);padding:14px;line-height:1.55}.field-notes textarea::placeholder{color:#929b97}
+    footer{display:flex;justify-content:space-between;gap:16px;margin-top:20px;padding:14px 2px;color:var(--muted);font-size:.72rem;border-top:1px solid var(--line)}
+    @media(max-width:850px){.combat,.dashboard{grid-template-columns:1fr}.save-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:560px){.shell{width:min(100% - 20px,1180px);padding-top:18px}.seal{width:56px;height:56px;font-size:1rem}.hero h1{font-size:2.75rem}.top-actions{justify-content:stretch;flex-wrap:wrap}.persist{width:100%;margin-bottom:2px}.top-actions .button{flex:1}.resource-grid,.prepared-list,.spellbook-grid{grid-template-columns:1fr}.save-grid{grid-template-columns:repeat(2,1fr)}.ring-slot{grid-template-columns:28px 1fr}.ring-slot .button{grid-column:2}.hp-line{align-items:flex-end}.hp-form{flex-wrap:wrap}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    (()=>{
+      "use strict";
+      const SPELLS={
+        "Cantrip":["Mage Hand","Mending","Light","Detect Magic"],
+        "1st":["Comprehend Languages","Feather Fall","Grease","Identify","Magic Missile","Protection from Evil","Read Magic","Shield","Sleep"],
+        "2nd":["Detect Invisibility","Invisibility","Knock","Levitate","Mirror Image","Web","Wizard Lock"],
+        "3rd":["Clairvoyance","Dispel Magic","Fireball","Fly","Haste","Lightning Bolt","Locate Object","Protection from Normal Missiles","Water Breathing"],
+        "4th":["Dimension Door","Evard's Black Tentacles","Ice Storm","Improved Invisibility","Polymorph Self","Stoneskin"]
+      };
+      const LIMITS={"1st":4,"2nd":3,"3rd":2,"4th":1};
+      const ALL_LEVELED=Object.keys(LIMITS).flatMap(level=>SPELLS[level].map(name=>({level,name})));
+      const DEFAULT={hp:28,wand:8,prepared:{"1st":[],"2nd":[],"3rd":[],"4th":[]},ring:[{name:"Magic Missile",used:false},{name:"Shield",used:false},{name:"Web",used:false}],potions:{"Extra-Healing":false,"Invisibility":false},scrolls:{"Dimension Door":false,"Fly":false,"Protection from Normal Missiles":false},fieldNotes:""};
+      const KEY="reylan-thorn-tracker-v1";
+      let editorOpen=false;
+      let preparedSerial=0;
+      const clone=value=>JSON.parse(JSON.stringify(value));
+      const newPrepared=name=>({id:`prepared-${Date.now().toString(36)}-${preparedSerial++}`,name,cast:false});
+      const normalizePrepared=(prepared={},legacyCast={})=>Object.fromEntries(Object.keys(LIMITS).map(level=>[level,(prepared[level]||[]).slice(0,LIMITS[level]).map((entry,index)=>typeof entry==="string"?{id:`migrated-${level}-${index}-${entry.replace(/\W/g,"")}`,name:entry,cast:!!legacyCast[`${level}:${entry}`]}:{id:entry.id||`migrated-${level}-${index}`,name:entry.name,cast:!!entry.cast})]));
+      const hadSavedState=(()=>{try{return localStorage.getItem(KEY)!==null}catch{return false}})();
+      const load=()=>{try{const saved=JSON.parse(localStorage.getItem(KEY));return saved?{...clone(DEFAULT),...saved,prepared:normalizePrepared(saved.prepared,saved.cast),potions:{...DEFAULT.potions,...saved.potions},scrolls:{...DEFAULT.scrolls,...saved.scrolls}}:clone(DEFAULT)}catch{return clone(DEFAULT)}};
+      let state=load();
+      let saveLabel=hadSavedState?"Restored from this device":"Saves on this device";
+      const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch{return false}};
+      const esc=value=>String(value).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+      const options=current=>'<option value="">Empty slot</option>'+ALL_LEVELED.map(s=>`<option value="${esc(s.name)}" ${s.name===current?"selected":""}>${s.level} — ${esc(s.name)}</option>`).join("");
+
+      function preparedMarkup(){
+        return Object.keys(LIMITS).map(level=>{
+          const picked=state.prepared[level];
+          const slots=picked.map(spell=>`<div class="spell-slot ${spell.cast?"cast":""}"><span>${esc(spell.name)}</span><button class="button small" data-cast-id="${esc(spell.id)}">${spell.cast?"Restore":"Cast"}</button></div>`).join("");
+          const empties=Array.from({length:LIMITS[level]-picked.length},()=>'<div class="spell-slot empty">Unfilled slot</div>').join("");
+          return `<section class="prepared-level"><div class="level-head"><h3>${level} level</h3><span>${picked.length} / ${LIMITS[level]} prepared</span></div><div class="prepared-list">${slots}${empties}</div></section>`;
+        }).join("");
+      }
+
+      function spellbookMarkup(){
+        return Object.keys(LIMITS).map(level=>{
+          const full=state.prepared[level].length>=LIMITS[level];
+          const choices=SPELLS[level].map(name=>{const count=state.prepared[level].filter(spell=>spell.name===name).length;return `<div class="spell-choice"><span>${esc(name)}</span><span class="quantity"><button class="qty-button" data-remove-prepared="${level}" data-spell-name="${esc(name)}" ${count===0?"disabled":""} aria-label="Remove one prepared ${esc(name)}">−</button><span class="spell-count">${count}</span><button class="qty-button" data-add-prepared="${level}" data-spell-name="${esc(name)}" ${full?"disabled":""} aria-label="Prepare another ${esc(name)}">+</button></span></div>`}).join("");
+          return `<section class="spellbook-group"><h3>${level} level · choose ${LIMITS[level]}</h3>${choices}</section>`;
+        }).join("");
+      }
+
+      function render(){
+        const hpPct=Math.max(0,Math.min(100,state.hp/28*100));
+        document.getElementById("app").innerHTML=`
+          <main class="shell">
+            <header class="hero"><div><p class="eyebrow">Magic User 7</p><h1>Reylan Thorn</h1><p class="tagline">Field ledger &amp; spell tracker</p></div><div class="seal" aria-hidden="true">RT</div></header>
+            <nav class="top-actions" aria-label="Tracker actions"><span class="persist" role="status" aria-live="polite"><span class="persist-dot"></span>${saveLabel}</span><button class="button" id="sunrise-all">Sunrise: recharge wand</button><button class="button danger" id="reset">Reset tracker</button></nav>
+            <section class="combat" aria-label="Combat overview">
+              <article class="card hp-card"><p class="label">Hit points</p><div class="hp-line"><div><div class="hp-value"><strong>${state.hp}</strong><span>/ 28</span></div><div class="detail">${state.hp===0?"Down":state.hp<=7?"Critical":state.hp<=14?"Bloodied":"Standing"} · ${Math.round(hpPct)}%</div></div><div class="hp-actions"><button class="icon-button" data-hp="-1" aria-label="Lose one hit point">−</button><button class="icon-button" data-hp="1" aria-label="Recover one hit point">+</button></div></div><form class="hp-form" id="hp-form"><input id="hp-amount" type="number" min="1" value="1" aria-label="Hit point amount"><button class="button small" name="mode" value="damage">Damage</button><button class="button small" name="mode" value="heal">Heal</button></form></article>
+              <article class="card stat-card"><p class="label">Armor class</p><strong class="big-stat">4</strong><span class="detail">Bracers AC 6 · Ring of Protection +1</span></article>
+              <article class="card stat-card"><p class="label">THAC0</p><strong class="big-stat">18</strong><span class="detail">Quarterstaff · Dagger +1 backup</span></article>
+            </section>
+            <section class="dashboard">
+              <div class="stack">
+                <article class="panel"><div class="panel-head"><div><h2>Saving throws</h2><p>Ring of Protection +1 included</p></div></div><div class="save-grid">${[["Poison / Death",12],["Rod / Staff / Wand",8],["Petrification",10],["Breath Weapon",12],["Spell",9]].map(s=>`<div class="save"><span>${s[0]}</span><strong>${s[1]}</strong></div>`).join("")}</div></article>
+                <article class="panel"><div class="panel-head"><div><h2>Prepared spells</h2><p>Mark each spell as it is cast</p></div><button class="button small primary" id="toggle-editor">${editorOpen?"Done":"Choose spells"}</button></div><div><p class="label">At-will cantrips</p><div class="cantrips">${SPELLS.Cantrip.map(s=>`<span class="chip cantrip">${esc(s)}</span>`).join("")}</div>${preparedMarkup()}</div><section class="spellbook" ${editorOpen?"":"hidden"}><div class="spellbook-grid">${spellbookMarkup()}</div><p class="notice">Selections save automatically on this device. Detect Magic is the DM-approved, at-will conversion and is not also listed as a 1st-level spell.</p></section></article>
+              </div>
+              <div class="stack">
+                <article class="panel"><div class="panel-head"><div><h2>Wand of Magic Missiles</h2><p>8 charges · regains all expended charges at sunrise</p></div><strong>${state.wand}/8</strong></div><div class="charges"><div class="charge-pips" aria-label="${state.wand} charges remaining">${Array.from({length:8},(_,i)=>`<button class="pip ${i<state.wand?"full":""}" data-wand-set="${i+1}" aria-label="Set wand to ${i+1} charges"></button>`).join("")}</div><div><button class="icon-button" data-wand="-1" aria-label="Use one wand charge">−</button> <button class="icon-button" data-wand="1" aria-label="Restore one wand charge">+</button></div></div><button class="button sunrise" id="sunrise-wand">Refresh at sunrise</button></article>
+                <article class="panel"><div class="panel-head"><div><h2>Ring of Spell Storing</h2><p>Assign one spell to each of the three slots</p></div></div><div class="ring-slots">${state.ring.map((slot,i)=>`<div class="ring-slot ${slot.used?"expended":""}"><span class="ring-number">${i+1}</span><select data-ring="${i}" aria-label="Ring spell slot ${i+1}">${options(slot.name)}</select><button class="button small" data-ring-use="${i}">${slot.used?"Restore":"Expend"}</button></div>`).join("")}</div></article>
+                <article class="panel"><div class="panel-head"><div><h2>Consumables</h2><p>Potions and scroll spells</p></div></div><p class="label">Potions</p><div class="list">${Object.entries(state.potions).map(([name,used])=>`<div class="track-row ${used?"used":""}"><span>Potion of ${esc(name)}</span><button class="button small" data-potion="${esc(name)}">${used?"Restore":"Use"}</button></div>`).join("")}</div><p class="label" style="margin-top:16px">Spell scroll</p><div class="list">${Object.entries(state.scrolls).map(([name,used])=>`<div class="track-row ${used?"used":""}"><span>${esc(name)}</span><button class="button small" data-scroll="${esc(name)}">${used?"Restore":"Cast"}</button></div>`).join("")}</div></article>
+              </div>
+            </section>
+            <section class="panel field-notes"><div class="panel-head"><div><h2>Field Notes</h2><p>Status effects, durations, conditions, and temporary reminders · autosaves locally</p></div></div><textarea id="field-notes" aria-label="Field Notes" placeholder="Status effects, durations, conditions, reminders…">${esc(state.fieldNotes||"")}</textarea></section>
+            <footer><span>Reylan Thorn · Neutral Good · Magic User 7</span><span>HP - ${state.hp} · AC 4 · THAC0 18</span></footer>
+          </main>`;
+        wire();
+      }
+
+      function commit(){saveLabel=save()?"Saved on this device":"Local saving unavailable";render()}
+      function wire(){
+        document.querySelectorAll("[data-hp]").forEach(b=>b.onclick=()=>{state.hp=Math.max(0,Math.min(28,state.hp+Number(b.dataset.hp)));commit()});
+        document.getElementById("hp-form").onsubmit=e=>{e.preventDefault();const amount=Math.max(1,Number(document.getElementById("hp-amount").value)||1);const mode=e.submitter.value;state.hp=Math.max(0,Math.min(28,state.hp+(mode==="heal"?amount:-amount)));commit()};
+        document.querySelectorAll("[data-wand]").forEach(b=>b.onclick=()=>{state.wand=Math.max(0,Math.min(8,state.wand+Number(b.dataset.wand)));commit()});
+        document.querySelectorAll("[data-wand-set]").forEach(b=>b.onclick=()=>{state.wand=Number(b.dataset.wandSet);commit()});
+        document.getElementById("sunrise-wand").onclick=()=>{state.wand=8;commit()};
+        document.getElementById("sunrise-all").onclick=()=>{state.wand=8;commit()};
+        document.getElementById("toggle-editor").onclick=()=>{editorOpen=!editorOpen;render();if(editorOpen)setTimeout(()=>document.querySelector(".spellbook").scrollIntoView({behavior:"smooth",block:"nearest"}),0)};
+        document.querySelectorAll("[data-add-prepared]").forEach(b=>b.onclick=()=>{const level=b.dataset.addPrepared;if(state.prepared[level].length<LIMITS[level]){state.prepared[level].push(newPrepared(b.dataset.spellName));commit()}});
+        document.querySelectorAll("[data-remove-prepared]").forEach(b=>b.onclick=()=>{const level=b.dataset.removePrepared,name=b.dataset.spellName,index=state.prepared[level].map(spell=>spell.name).lastIndexOf(name);if(index>=0){state.prepared[level].splice(index,1);commit()}});
+        document.querySelectorAll("[data-cast-id]").forEach(b=>b.onclick=()=>{for(const level of Object.keys(LIMITS)){const spell=state.prepared[level].find(item=>item.id===b.dataset.castId);if(spell){spell.cast=!spell.cast;break}}commit()});
+        document.querySelectorAll("[data-ring]").forEach(sel=>sel.onchange=()=>{state.ring[Number(sel.dataset.ring)].name=sel.value;state.ring[Number(sel.dataset.ring)].used=false;commit()});
+        document.querySelectorAll("[data-ring-use]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.ringUse);if(state.ring[i].name){state.ring[i].used=!state.ring[i].used;commit()}});
+        document.querySelectorAll("[data-potion]").forEach(b=>b.onclick=()=>{const name=b.dataset.potion;state.potions[name]=!state.potions[name];commit()});
+        document.querySelectorAll("[data-scroll]").forEach(b=>b.onclick=()=>{const name=b.dataset.scroll;state.scrolls[name]=!state.scrolls[name];commit()});
+        document.getElementById("field-notes").oninput=e=>{state.fieldNotes=e.target.value;saveLabel=save()?"Saved on this device":"Local saving unavailable";const status=document.querySelector(".persist");if(status&&status.lastChild)status.lastChild.textContent=saveLabel};
+        document.getElementById("reset").onclick=()=>{if(confirm("Reset all tracked values to Reylan's starting state?")){state=clone(DEFAULT);editorOpen=false;commit()}};
+      }
+      render();
+    })();
+  </script>
+</body>
+</html>
