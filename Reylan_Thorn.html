@@ -37,7 +37,7 @@
       };
       const LIMITS={"1st":4,"2nd":3,"3rd":2,"4th":1};
       const ALL_LEVELED=Object.keys(LIMITS).flatMap(level=>SPELLS[level].map(name=>({level,name})));
-      const DEFAULT={hp:28,wand:8,prepared:{"1st":[],"2nd":[],"3rd":[],"4th":[]},ring:[{name:"Magic Missile",used:false},{name:"Shield",used:false},{name:"Web",used:false}],potions:{"Extra-Healing":false,"Invisibility":false},scrolls:{"Dimension Door":false,"Fly":false,"Protection from Normal Missiles":false},fieldNotes:""};
+      const DEFAULT={hp:28,wand:8,prepared:{"1st":[],"2nd":[],"3rd":[],"4th":[]},ring:[{name:"Magic Missile",used:false},{name:"Shield",used:false},{name:"Web",used:false}],potions:{"Cure Light Wounds":false,"Cure Serious Wounds":false,"Giant Strength":false,"Invisibility":false},scrolls:{"Dimension Door":false,"Fly":false,"Protection from Normal Missiles":false},fieldNotes:""};
       const KEY="reylan-thorn-tracker-v1";
       let editorOpen=false;
       let preparedSerial=0;
